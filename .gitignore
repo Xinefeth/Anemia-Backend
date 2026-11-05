@@ -10,3 +10,8 @@
 # Archivos temporales/bloqueo de Excel
 ~$*
 .~lock.*#
+.venv/
+__pycache__/
+*.db
+.env
+.pytest_cache/

@@ -1,0 +1,11 @@
+fastapi==0.121.3
+uvicorn[standard]==0.38.0
+pydantic==2.12.4
+pydantic-settings==2.14.2
+SQLAlchemy==2.0.44
+psycopg[binary]==3.3.4
+PyJWT==2.13.0
+bcrypt==5.0.0
+scikit-learn==1.7.0
+numpy==1.26.4
+joblib==1.5.0
