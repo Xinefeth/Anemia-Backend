@@ -1,0 +1,12 @@
+# Excel
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+*.xltx
+*.xltm
+*.csv
+
+# Archivos temporales/bloqueo de Excel
+~$*
+.~lock.*#
