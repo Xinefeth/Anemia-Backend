@@ -15,8 +15,8 @@ services:
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: CORS_ORIGENES
-        value: "*"
+      - key: CORS_ORIGENES   # orígenes del front separados por coma (https://mi-front.com); en producción no hay regex de localhost
+        sync: false
       - key: DEMO_CONTRASENA   # definir en el panel de Render (sync: false = se pide al crear)
         sync: false
       - key: DEMO_USUARIO

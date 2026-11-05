@@ -4,7 +4,7 @@ El niño se identifica solo por un código: no se guardan nombres (anonimizado).
 """
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Boolean
+from sqlalchemy import true, DateTime, Float, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -16,7 +16,8 @@ class Usuario(Base):
     nombre: Mapped[str] = mapped_column(String(100))
     usuario: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     contrasena: Mapped[str] = mapped_column(String(100))  # hash bcrypt, nunca texto plano
-    rol: Mapped[str] = mapped_column(String(30))  # médico | enfermero
+    rol: Mapped[str] = mapped_column(String(30))  # médico | enfermero | administrador
+    activo: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())  # False = inhabilitado
 
 
 class Nino(Base):
@@ -30,6 +31,7 @@ class Nino(Base):
     suplementacion: Mapped[bool] = mapped_column(Boolean)
     # Hb medida: NO entra al modelo; solo sirve de referencia para medir PC en reportes.
     hemoglobina: Mapped[float | None] = mapped_column(Float, nullable=True)
+    grupo: Mapped[str] = mapped_column(String(15), default="control", server_default="control")
 
 
 class Valoracion(Base):

@@ -48,10 +48,30 @@ Usuario demo (seed, configurable con `DEMO_*`): `demo` / `demo`.
 | GET/DELETE | `/api/valoraciones/{id}` | detalle / eliminar |
 | GET | `/api/dashboard` | totales por riesgo, Hb promedio, últimos 7 días, recientes |
 | GET | `/api/reporte?desde=&hasta=` | PC, TR, TT por grupo control/experimental |
+| GET/POST | `/api/ninos` | RF08/RF09 (`?q=` por código) y RF07; 409 si el código ya existe |
+| GET/PUT/DELETE | `/api/ninos/{id}` | RF10/RF11; DELETE borra también sus valoraciones |
+| GET/POST | `/api/usuarios` | RF04/RF03; solo roles `administrador` o `médico` (403 si no) |
+| PUT/DELETE | `/api/usuarios/{id}` | RF05; DELETE = inhabilitar (`activo=false`, no puede iniciar sesión) |
 
-Definiciones del reporte: **PC** = % de valoraciones cuyo riesgo coincide con el riesgo de referencia por Hb
-medida (ajustada por altitud; <10 Alto, 10-<11 Medio, >=11 Bajo); **TR** = tiempo de respuesta promedio (s);
-**TT** = niños del grupo valorados en el periodo / niños del grupo registrados (%).
+`edad_meses` va de 0 a 59 (RN01: menores de cinco años). Roles: `médico`, `enfermero`, `administrador`.
+CORS: en desarrollo se permite cualquier puerto de `localhost`/`127.0.0.1` además de `CORS_ORIGENES`;
+en producción solo los orígenes de `CORS_ORIGENES`.
+
+### Reporte (`GET /api/reporte?desde=&hasta=`)
+Calculado por grupo (`control` / `experimental`) sobre las valoraciones con `fecha` en el periodo (por defecto, 30 días).
+- **PC** (% clasificaciones correctas) = valoraciones cuyo riesgo coincide con el riesgo de **referencia por Hb medida** /
+  valoraciones **con Hb**. La Hb se ajusta por altitud (OMS 2011, desde 1000 msnm); referencia: <10 Alto, 10-<11 Medio,
+  >=11 Bajo. Las valoraciones sin Hb **se excluyen del denominador**. Ojo: el Modelo B no usa Hb, así que un niño con
+  Hb baja clasificado "Bajo" cuenta como error (comportamiento esperado).
+- **TR** (tiempo de respuesta) = promedio de `tiempo_ms` de las valoraciones, **en segundos** con 3 decimales
+  (mide el cálculo en el servidor, sin red).
+- **TT** (tasa de tamizaje, %) = niños registrados en el grupo que tienen alguna valoración en el periodo /
+  niños registrados en el grupo (el grupo del niño es el de su última valoración o el que se le asigne en `/api/ninos`). Máx. 100.
+- Un grupo sin datos devuelve `0.0`: la UI debe usar los conteos para mostrar "sin datos" (n = 0).
+
+Campos de respuesta: `desde, hasta, total, pc, tr, tt` (cada uno `{control, experimental}`) y los conteos usados
+`n_valoraciones` (base de TR), `n_pc` (denominador de PC), `n_tt_valorados`, `n_tt_registrados` (numerador/denominador de TT),
+también `{control, experimental}`.
 
 ## Despliegue en Render
 1. Subir este repo a GitHub (incluyendo `modelos/modelo_anemia_rf.pkl`).

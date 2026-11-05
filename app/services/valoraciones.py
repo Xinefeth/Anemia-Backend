@@ -29,7 +29,7 @@ def guardar(db: Session, d: DatosValoracion, id_usuario: int) -> Valoracion:
         nino = Nino(codigo=d.codigo)
         db.add(nino)
     nino.edad_meses, nino.altitud, nino.sexo = d.edad_meses, d.altitud, d.sexo
-    nino.cred, nino.suplementacion = d.cred, d.suplementacion
+    nino.cred, nino.suplementacion, nino.grupo = d.cred, d.suplementacion, d.grupo
     if d.hemoglobina is not None:
         nino.hemoglobina = d.hemoglobina
     fecha = d.fecha.replace(tzinfo=None) if d.fecha else datetime.now()

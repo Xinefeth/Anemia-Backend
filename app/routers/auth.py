@@ -21,4 +21,6 @@ def login(datos: LoginIn, db: Session = Depends(get_db)):
     if not u or not ok:
         # 400 (no 401): la app trata 401 como "sesión expirada".
         raise HTTPException(status_code=400, detail="Usuario o contraseña incorrectos")
+    if not u.activo:
+        raise HTTPException(status_code=403, detail="Usuario inhabilitado")
     return LoginOut(token=security.crear_token(u.id), usuario=UsuarioOut(id=u.id, nombre=u.nombre, rol=u.rol))

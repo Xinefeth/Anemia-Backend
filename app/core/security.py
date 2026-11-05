@@ -47,6 +47,16 @@ def usuario_actual(
         usuario = db.get(Usuario, int(datos["sub"]))
     except (jwt.PyJWTError, KeyError, ValueError):
         raise error
-    if usuario is None:
+    if usuario is None or not usuario.activo:  # inhabilitado: el token deja de servir
         raise error
     return usuario
+
+
+# Roles que pueden gestionar usuarios (RF03-RF06). Los RF solo definen médico/enfermero; "administrador" es opcional.
+ROLES_GESTION = {"administrador", "médico"}
+
+
+def gestor_usuarios(user: Usuario = Depends(usuario_actual)) -> Usuario:
+    if user.rol not in ROLES_GESTION:
+        raise HTTPException(status_code=403, detail="No tiene permisos para gestionar usuarios")
+    return user

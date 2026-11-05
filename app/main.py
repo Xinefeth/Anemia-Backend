@@ -13,7 +13,8 @@ from app.core.config import get_settings
 from app.core.security import hashear
 from app.db.database import Base, SessionLocal, engine
 from app.models.entidades import Usuario
-from app.routers import auth, prediccion, valoraciones
+from app.db.migraciones import migrar
+from app.routers import auth, ninos, prediccion, usuarios, valoraciones
 from app.services import predictor
 
 logging.basicConfig(level=logging.INFO)
@@ -36,6 +37,7 @@ async def lifespan(app: FastAPI):
     s = get_settings()
     s.validar_produccion()
     Base.metadata.create_all(engine)  # creación de tablas al inicio
+    migrar(engine)  # columnas nuevas en BD existentes
     sembrar_demo()
     predictor.cargar_modelo(s.ruta_modelo)  # una sola vez
     yield
@@ -47,18 +49,24 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan,
 )
+_cfg = get_settings()
 app.add_middleware(
-    CORSMiddleware, allow_origins=get_settings().origenes_cors,
+    CORSMiddleware,
+    allow_origins=_cfg.origenes_cors,  # producción: solo los de CORS_ORIGENES
+    # Desarrollo: cualquier puerto de localhost/127.0.0.1 (Flutter web / Chrome usa puertos aleatorios).
+    allow_origin_regex=None if _cfg.entorno == "production" else r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=False, allow_methods=["*"], allow_headers=["*"],
 )
 app.include_router(auth.router)
 app.include_router(prediccion.router)
 app.include_router(valoraciones.router)
+app.include_router(ninos.router)
+app.include_router(usuarios.router)
 
 
-@app.get("/health", tags=["Estado"])
+@app.api_route("/health", methods=["GET", "HEAD"], tags=["Estado"])
 def health():
-    """Chequeo de salud (Render) - público."""
+    """Chequeo de salud (Render) - público y barato: no toca la base de datos."""
     return {"estado": "ok", "modelo_cargado": predictor.modelo_disponible()}
 
 
