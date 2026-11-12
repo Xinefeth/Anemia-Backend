@@ -20,8 +20,8 @@ def test_login_incorrecto_no_es_401(client):
 
 
 def test_hash_no_es_texto_plano():
-    from app.db.database import SessionLocal
-    from app.models.entidades import Usuario
+    from app.db.session import SessionLocal
+    from app.modules.usuarios.models import Usuario
     with SessionLocal() as db:
         u = db.query(Usuario).filter_by(usuario="demo").one()
         assert u.contrasena != "demo" and u.contrasena.startswith("$2")

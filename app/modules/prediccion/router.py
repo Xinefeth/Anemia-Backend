@@ -1,9 +1,9 @@
 """Endpoint de predicción de riesgo (protegido con JWT)."""
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.core.security import usuario_actual
-from app.schemas.esquemas import DatosPrediccion, ResultadoPrediccion
-from app.services import predictor
+from app.api.deps import usuario_actual
+from app.modules.prediccion import service as predictor
+from app.modules.prediccion.schemas import DatosPrediccion, ResultadoPrediccion
 
 router = APIRouter(prefix="/api", tags=["Valoración"], dependencies=[Depends(usuario_actual)])
 

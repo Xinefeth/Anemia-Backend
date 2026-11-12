@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import create_engine, text
 
 from app.db.migraciones import migrar
-from app.services.reportes import hb_ajustada, riesgo_referencia
+from app.modules.reportes.service import hb_ajustada, riesgo_referencia
 
 VENT = {"desde": "2031-03-01", "hasta": "2031-03-31"}  # ventana aislada del resto de tests
 
@@ -53,8 +53,8 @@ def test_tr_segundos_con_tres_decimales(client, cab):
 def test_tt_un_solo_grupo_y_maximo_100(client, cab):
     _val(client, cab, "TT1", "experimental", 11.5, dia="2031-03-12")
     # niño registrado en 'experimental' pero sin valorar en el periodo
-    assert client.post("/api/ninos", json={"codigo": "TT_SIN", "edad_meses": 12, "sexo": "M",
-                                           "grupo": "experimental"}, headers=cab).status_code == 201
+    assert client.post("/api/ninos", json={"codigo": "TT_SIN", "edad_meses": 12, "sexo": "M", "altitud": 34,
+                                           "cred": True, "suplementacion": True, "grupo": "experimental"}, headers=cab).status_code == 201
     r = client.get("/api/reporte", params=VENT, headers=cab).json()
     ex = r["n_tt_registrados"]["experimental"]
     assert 0 < r["n_tt_valorados"]["experimental"] < ex  # TT_SIN cuenta como registrado no valorado

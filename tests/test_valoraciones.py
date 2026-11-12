@@ -68,7 +68,7 @@ def test_reporte(client, cab):
 
 
 def test_referencia_hb():
-    from app.services.reportes import riesgo_referencia
+    from app.modules.reportes.service import riesgo_referencia
     assert riesgo_referencia(9.0, 34) == "Alto"
     assert riesgo_referencia(10.5, 34) == "Medio"
     assert riesgo_referencia(12.0, 34) == "Bajo"

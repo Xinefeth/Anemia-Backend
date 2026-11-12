@@ -15,3 +15,7 @@ __pycache__/
 *.db
 .env
 .pytest_cache/
+
+# Datos locales del estudio (no versionar) y BD de desarrollo
+ml/data/*
+!ml/data/.gitkeep

@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core import security
-from app.db.database import get_db
-from app.models.entidades import Usuario
-from app.schemas.esquemas import LoginIn, LoginOut, UsuarioOut
+from app.db.session import get_db
+from app.modules.auth.schemas import LoginIn, LoginOut, UsuarioOut
+from app.modules.usuarios.models import Usuario
 
 router = APIRouter(prefix="/api", tags=["Autenticación"])
 

@@ -3,10 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from app.core.security import usuario_actual
-from app.db.database import get_db
-from app.models.entidades import Nino, Valoracion
-from app.schemas.esquemas import NinoIn, NinoOut
+from app.api.deps import usuario_actual
+from app.db.session import get_db
+from app.modules.ninos.models import Nino
+from app.modules.ninos.schemas import NinoIn, NinoOut
+from app.modules.valoraciones.models import Valoracion
 
 router = APIRouter(prefix="/api/ninos", tags=["Niños"], dependencies=[Depends(usuario_actual)])
 

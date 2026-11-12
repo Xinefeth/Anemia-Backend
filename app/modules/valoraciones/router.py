@@ -1,14 +1,14 @@
-"""Valoraciones, historial, dashboard y reportes (todo protegido con JWT)."""
-from datetime import date, timedelta
-
+"""Valoraciones, historial y dashboard (todo protegido con JWT)."""
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
-from app.core.security import usuario_actual
-from app.db.database import get_db
-from app.models.entidades import Usuario, Valoracion
-from app.schemas.esquemas import DashboardOut, DatosValoracion, ReporteOut, ValoracionOut
-from app.services import predictor, reportes, valoraciones as svc
+from app.api.deps import usuario_actual
+from app.db.session import get_db
+from app.modules.prediccion import service as predictor
+from app.modules.usuarios.models import Usuario
+from app.modules.valoraciones import service as svc
+from app.modules.valoraciones.models import Valoracion
+from app.modules.valoraciones.schemas import DashboardOut, DatosValoracion, ValoracionOut
 
 router = APIRouter(prefix="/api", tags=["Valoraciones"], dependencies=[Depends(usuario_actual)])
 
@@ -52,12 +52,3 @@ def eliminar(id: int, db: Session = Depends(get_db)):
 def dashboard(db: Session = Depends(get_db)):
     return svc.dashboard(db)
 
-
-@router.get("/reporte", response_model=ReporteOut)
-def reporte(desde: date | None = None, hasta: date | None = None, db: Session = Depends(get_db)):
-    """Indicadores PC, TR y TT por grupo en el periodo (por defecto, últimos 30 días)."""
-    hasta = hasta or date.today()
-    desde = desde or hasta - timedelta(days=30)
-    if desde > hasta:
-        raise HTTPException(status_code=422, detail="'desde' no puede ser posterior a 'hasta'")
-    return reportes.generar(db, desde, hasta)

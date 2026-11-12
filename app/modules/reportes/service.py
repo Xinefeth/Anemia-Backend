@@ -13,8 +13,9 @@ from datetime import date, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.entidades import Nino, Valoracion
-from app.schemas.esquemas import Conteo, Indicador, ReporteOut
+from app.modules.ninos.models import Nino
+from app.modules.reportes.schemas import Conteo, Indicador, ReporteOut
+from app.modules.valoraciones.models import Valoracion
 
 GRUPOS = ("control", "experimental")
 
