@@ -38,7 +38,7 @@ def test_ninos_crud(client, cab):
 
 
 def test_eliminar_nino_borra_sus_valoraciones(client, cab):
-    v = client.post("/api/valoraciones", json={"codigo": "NGV1", "edad_meses": 10, "altitud": 0, "sexo": "M"},
+    v = client.post("/api/valoraciones", json={"codigo": "NGV1", "edad_meses": 10, "altitud": 0, "sexo": "M", "cred": True, "suplementacion": False},
                     headers=cab).json()
     nino = next(x for x in client.get("/api/ninos", params={"q": "NGV1"}, headers=cab).json())
     assert client.delete(f"/api/ninos/{nino['id']}", headers=cab).status_code == 204
@@ -46,7 +46,7 @@ def test_eliminar_nino_borra_sus_valoraciones(client, cab):
 
 
 def test_rn01_edad_0_59(client, cab):
-    base = {"edad_meses": 59, "altitud": 34, "sexo": "M"}
+    base = {"edad_meses": 59, "altitud": 34, "sexo": "M", "cred": True, "suplementacion": True}
     assert client.post("/api/predict", json=base, headers=cab).status_code == 200
     assert client.post("/api/predict", json={**base, "edad_meses": 60}, headers=cab).status_code == 422
     assert client.post("/api/valoraciones", json={**base, "codigo": "E60", "edad_meses": 60},

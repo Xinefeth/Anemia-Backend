@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     token_minutos: int = 480
     # Orígenes CORS separados por coma ("*" = todos; útil para app móvil/dev).
     cors_origenes: str = "*"
-    ruta_modelo: str = str(RAIZ_BACKEND / "modelos" / "modelo_anemia_rf.pkl")
+    ruta_modelo: str = str(RAIZ_BACKEND / "ml" / "artefactos" / "modelo_anemia_rf.pkl")
     # Usuario demo (seed). Desactivar con SEED_DEMO=false.
     seed_demo: bool = True
     demo_usuario: str = "demo"

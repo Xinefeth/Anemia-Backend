@@ -7,9 +7,10 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models.entidades import Nino, Valoracion
-from app.schemas.esquemas import DashboardOut, DatosValoracion, ValoracionOut
-from app.services import predictor
+from app.modules.ninos.models import Nino
+from app.modules.prediccion import service as predictor
+from app.modules.valoraciones.models import Valoracion
+from app.modules.valoraciones.schemas import DashboardOut, DatosValoracion, ValoracionOut
 
 
 def a_salida(v: Valoracion) -> ValoracionOut:

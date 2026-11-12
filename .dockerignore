@@ -1,7 +1,12 @@
 __pycache__/
 *.pyc
-.env
 *.db
-.pytest_cache/
+.env
+.venv/
 venv/
+.git/
+.pytest_cache/
 tests/
+ml/data/
+ml/notebooks/
+*.md

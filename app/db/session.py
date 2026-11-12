@@ -1,15 +1,9 @@
-"""
-Conexión a la base de datos (SQLAlchemy). PostgreSQL en producción, SQLite en dev/tests.
-"""
+"""Conexión a la base de datos (SQLAlchemy). PostgreSQL en producción, SQLite en dev/tests."""
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.core.config import get_settings
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 def _crear_engine():
